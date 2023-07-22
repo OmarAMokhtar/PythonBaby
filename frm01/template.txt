@@ -1,0 +1,6 @@
+# Implement this function.
+# It'll be used to animate the car.
+def car_position_at_time(t):
+    print("Time now is {}".format(t))
+    # Return the position at time t
+    return 0

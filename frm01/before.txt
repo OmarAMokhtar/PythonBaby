@@ -1,0 +1,3 @@
+import time
+def car_position_at_time(time):
+    return 0

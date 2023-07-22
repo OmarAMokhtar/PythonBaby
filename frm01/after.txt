@@ -1,0 +1,10 @@
+__start_time = time.time()
+
+while time.time() - __start_time < 10:
+    __current_session = int(input())
+    if __current_session != __session_id:
+        break
+    t = time.time() - __start_time
+    x = car_position_at_time(t)
+    print("###DATA### {};{}".format(t, x))
+    time.sleep(0.01)

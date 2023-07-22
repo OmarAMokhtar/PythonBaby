@@ -1,0 +1,1 @@
+For 3 seconds, the car should move at 20/sec. Then 50/sec after that.

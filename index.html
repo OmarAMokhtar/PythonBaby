@@ -7,12 +7,14 @@
     <script src="skulpt.min.js" type="text/javascript"></script>
     <script src="skulpt-stdlib.js" type="text/javascript"></script>
     <meta property="og:title" content="Python for babies!" />
-    <meta property="og:description" content="Step by step exercises that teaches the basic concepts of Python and programming in general" />
+    <meta property="og:description"
+        content="Step by step exercises that teaches the basic concepts of Python and programming in general" />
     <meta property="og:image" content="http://python.baby/favicon.png" />
     <meta property="og:url" content="http://python.baby/" />
     <meta property="og:type" content="website" />
     <meta name="twitter:title" content="Python for babies!">
-    <meta name="twitter:description" content="Step by step exercises that teaches the basic concepts of Python and programming in general">
+    <meta name="twitter:description"
+        content="Step by step exercises that teaches the basic concepts of Python and programming in general">
     <meta name="twitter:image" content="http://python.baby/favicon.png">
     <script type="text/javascript">
 
@@ -134,66 +136,68 @@
         }
 
         function runit() {
-            
-            // if (is_running) {
-            //     return;
-            // }
 
-            const matches = before_code.match(/\n/g);
-            var line_offset = matches ? matches.length : 0;
+            if (is_running) {
+                current_session++;
+                is_running = false;
+                document.getElementById("run-button").style.backgroundImage = "url('run.png')";
+            } else {
+                document.getElementById("run-button").style.backgroundImage = "url('stop.png')";
+                const matches = before_code.match(/\n/g);
+                var line_offset = matches ? matches.length : 0;
 
-            var prog = document.getElementById("code-editor").value;
-            var log = document.getElementById("lower-part");
-            log.innerHTML = '';
+                var prog = document.getElementById("code-editor").value;
+                var log = document.getElementById("lower-part");
+                log.innerHTML = '';
 
-            current_session++;
+                current_session++;
 
-            var sesion_py = "__session_id = " + current_session + "\n";
+                var sesion_py = "__session_id = " + current_session + "\n";
 
-            resetProblemStatus();
+                resetProblemStatus();
 
-            Sk.configure({ output: outf, read: builtinRead, inputfun: inputf});
+                Sk.configure({ output: outf, read: builtinRead, inputfun: inputf });
 
-            var myPromise = Sk.misceval.asyncToPromise(function () {
-                return Sk.importMainWithBody("main", false, before_code + prog + '\n' + sesion_py + after_code, true);
-            });
+                var myPromise = Sk.misceval.asyncToPromise(function () {
+                    return Sk.importMainWithBody("main", false, before_code + prog + '\n' + sesion_py + after_code, true);
+                });
 
-            myPromise.__session_id = current_session;
+                myPromise.__session_id = current_session;
 
-            is_running = true;
+                is_running = true;
 
-            document.getElementById("run-button").style.enabled = false;
-            document.getElementById("result-image").className = "ok";
-            myPromise.then(
-                function (mod) {
-                    if (myPromise.__session_id != current_session) {
-                        return;
+                document.getElementById("run-button").style.enabled = false;
+                document.getElementById("result-image").className = "ok";
+                myPromise.then(
+                    function (mod) {
+                        if (myPromise.__session_id != current_session) {
+                            return;
+                        }
+                        is_running = false;
+                        document.getElementById("run-button").style.backgroundImage = "url('run.png')";
+                        if (!getProblemStatus()) {
+                            tryAgain();
+                        } else {
+                            celebrate();
+                        }
+                    },
+                    function (err) {
+                        if (myPromise.__session_id == current_session) {
+                            is_running = false;
+                            document.getElementById("run-button").style.backgroundImage = "url('run.png')";
+                            document.getElementById("result-image").className = "notok";
+                            var error_string = err.toString();
+                            var matches = error_string.match(/line (\d+)/);
+                            matches[1] = parseInt(matches[1]) - line_offset;
+                            error_string = error_string.replace(/line (\d+)/, "line " + matches[1]);
+                            log.innerHTML = "<p class='err'>" + encStr(error_string) + "</p>";
+                            log.scrollTop = log.scrollHeight;
+                        }
                     }
-                    is_running = false;
-                    document.getElementById("run-button").style.enabled = true;
-                    if (!getProblemStatus()) {
-                        tryAgain();
-                    } else {
-                        celebrate();
-                    }
-                },
-                function (err) {
-                    if (myPromise.__session_id != current_session) {
-                        return;
-                    }
-                    is_running = false;
-                    document.getElementById("run-button").style.enabled = true;
-                    document.getElementById("result-image").className = "notok";
-                    var error_string = err.toString();
-                    var matches = error_string.match(/line (\d+)/);
-                    matches[1] = parseInt(matches[1]) - line_offset;
-                    error_string = error_string.replace(/line (\d+)/, "line " + matches[1]);
-                    log.innerHTML = "<p class='err'>" + encStr(error_string) + "</p>";
-                    log.scrollTop = log.scrollHeight;
-                }
-            );
+                );
 
-            setCookie('lastcode-' + current_problem, prog, 100);
+                setCookie('lastcode-' + current_problem, prog, 100);
+            }
         }
 
         function loadCSS(url) {
@@ -270,7 +274,7 @@
                 document.getElementById("message").innerHTML = text;
             });
         }
-    
+
         function tryAgain() {
             document.getElementById("overlay-message").style.display = "flex";
             document.getElementById("good-result").style.display = "none";
@@ -300,7 +304,7 @@
         function stayInPage() {
             document.getElementById("overlay-message").style.display = "none";
         }
-    
+
         function nextProblem() {
             next_problem = problems_list[(problems_list.indexOf(current_problem) + 1) % problems_list.length];
             location.href = "#" + next_problem;
@@ -524,7 +528,8 @@
             top: -100px;
             border-radius: 10%;
             position: absolute;
-            animation: confetti-fall linear 3s; /* Adjust duration as needed */
+            animation: confetti-fall linear 3s;
+            /* Adjust duration as needed */
             z-index: 100;
         }
 
@@ -541,9 +546,11 @@
             0% {
                 transform: translateY(-250px) rotate(0deg);
             }
+
             50% {
                 transform: translateY(calc(50vh)) rotate(500deg);
             }
+
             100% {
                 transform: translateY(calc(100vh + 50px)) rotate(900deg);
             }
@@ -587,12 +594,11 @@
         }
 
         /* Styles for screens in portrait orientation */
-        @media screen and (orientation: portrait){
+        @media screen and (orientation: portrait) {
             #upper-part {
                 flex-direction: column;
             }
         }
-
     </style>
 </head>
 

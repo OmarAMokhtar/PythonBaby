@@ -166,8 +166,8 @@
 
                 is_running = true;
 
-                document.getElementById("run-button").style.enabled = false;
-                document.getElementById("result-image").className = "ok";
+                document.body.style.backgroundColor = "rgb(16, 16, 28)";
+                document.getElementById("code-editor").style.backgroundColor = "rgb(59, 54, 54)";
                 myPromise.then(
                     function (mod) {
                         if (myPromise.__session_id != current_session) {
@@ -185,7 +185,8 @@
                         if (myPromise.__session_id == current_session) {
                             is_running = false;
                             document.getElementById("run-button").style.backgroundImage = "url('run.png')";
-                            document.getElementById("result-image").className = "notok";
+                            document.body.style.backgroundColor = "rgb(200, 0, 0)";
+                            document.getElementById("code-editor").style.backgroundColor = "rgb(200, 0, 0)";
                             var error_string = err.toString();
                             var matches = error_string.match(/line (\d+)/);
                             matches[1] = parseInt(matches[1]) - line_offset;
@@ -432,7 +433,7 @@
             width: 0.6in;
             margin-right: 20px;
         }
-
+/* 
         .ok {
             background-image: url('ok.png');
             background-repeat: no-repeat;
@@ -445,7 +446,7 @@
             background-repeat: no-repeat;
             background-size: contain;
             background-color: transparent;
-        }
+        } */
 
         .box {
             border-radius: 8px;
@@ -456,7 +457,7 @@
         }
 
         .err {
-            color: rgb(210, 53, 53);
+            color: rgb(255, 93, 93);
             font-weight: bold;
         }
 

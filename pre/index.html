@@ -1,0 +1,418 @@
+<html>
+
+<head>
+    <link rel="icon" href="favicon.png" type="image/png">
+    <title>Python for babies!</title>
+    <meta property="og:title" content="Python for babies!" />
+    <meta property="og:description"
+        content="Step by step exercises that teaches the basic concepts of Python and programming in general" />
+    <meta property="og:image" content="http://python.baby/favicon.png" />
+    <meta property="og:url" content="http://python.baby/" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:title" content="Python for babies!">
+    <meta name="twitter:description"
+        content="Step by step exercises that teaches the basic concepts of Python and programming in general">
+    <meta name="twitter:image" content="http://python.baby/favicon.png">
+    <script type="text/javascript">
+
+        var problems_list = [];
+        fetch("problems.json").then(response => response.json()).then(function (json) {
+            problems_list = json.problems;
+        });
+
+        function encStr(str) {
+            return str.replace(/[&<>"'\n]/g, function (match) {
+                return {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    '\n': '<br/>',
+                    '\r': '',
+                    "'": '&#39;'
+                }[match];
+            });
+        }
+
+        function setCookie(name, value, daysToExpire) {
+            let expires = '';
+            if (daysToExpire) {
+                const date = new Date();
+                date.setTime(date.getTime() + (daysToExpire * 24 * 60 * 60 * 1000));
+                expires = '; expires=' + date.toUTCString();
+            }
+            document.cookie = name + '=' + encodeURIComponent(value) + expires + '; path=/' + '; SameSite=Strict';
+        }
+
+        function getCookie(name) {
+            const cookieName = name + '=';
+            const decodedCookie = decodeURIComponent(document.cookie);
+            const cookieArray = decodedCookie.split(';');
+
+            for (let i = 0; i < cookieArray.length; i++) {
+                let cookie = cookieArray[i];
+                while (cookie.charAt(0) === ' ') {
+                    cookie = cookie.substring(1);
+                }
+                if (cookie.indexOf(cookieName) === 0) {
+                    return cookie.substring(cookieName.length, cookie.length);
+                }
+            }
+            return null;
+        }
+
+        function loadCSS(url) {
+            var link = document.createElement("link");
+            link.rel = "stylesheet";
+            link.type = "text/css";
+            link.href = url;
+            document.head.appendChild(link);
+        }
+
+        function loadJS(url) {
+            var script = document.createElement("script");
+            script.src = url;
+            document.body.appendChild(script);
+        }
+
+        function unloadCSS(url) {
+            var links = document.getElementsByTagName("link");
+            for (var i = 0; i < links.length; i++) {
+                var link = links[i];
+                if (link.href === url) {
+                    link.parentNode.removeChild(link);
+                    return;
+                }
+            }
+        }
+
+        function unloadJS(url) {
+            var scripts = document.getElementsByTagName("script");
+            for (var i = 0; i < scripts.length; i++) {
+                var script = scripts[i];
+                if (script.src === url) {
+                    script.parentNode.removeChild(script);
+                    return;
+                }
+            }
+        }
+
+        function tryAgain() {
+            document.getElementById("overlay-message").style.display = "flex";
+            document.getElementById("good-result").style.display = "none";
+            document.getElementById("bad-result").style.display = "flex";
+        }
+
+        function celebrate() {
+            document.getElementById("overlay-message").style.display = "flex";
+            document.getElementById("good-result").style.display = "flex";
+            document.getElementById("bad-result").style.display = "none";
+
+            const container = document.getElementById('confetti-container');
+            const numParticles = 500;
+            container.innerHTML = '';
+
+            for (let i = 0; i < numParticles; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                container.appendChild(confetti);
+                confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                confetti.style.left = `${Math.random() * 100}%`;
+                confetti.style.animationDelay = i * (Math.random() * 0.05) + 's';
+            }
+        }
+
+        function stayInPage() {
+            document.getElementById("overlay-message").style.display = "none";
+        }
+
+        function nextProblem() {
+            next_problem = problems_list[(problems_list.indexOf(current_problem) + 1) % problems_list.length];
+            location.href = "#" + next_problem;
+            window.location.reload();
+        }
+
+        function createScene() {
+            const container = document.getElementById("fruit-container");
+            const canvas = document.getElementById("canvas");
+            container.innerHTML = "";
+            const num = Math.floor(Math.random() * 10) + 4;
+            var offset_x = 10;
+            var offset_y = 10;
+            var max_x = 0;
+            var max_y = 0;
+            var min_x = 1000;
+            var min_y = 1000;
+            for (var i = 0; i < num; i++) {
+                var orange = document.createElement("div");
+                orange.className = "fruit";
+                orange.style.left = offset_x + "px";
+                orange.style.top = offset_y + Math.floor(Math.random() * 20 - 10) + "px";
+                offset_x += 85 + Math.floor(Math.random() * 10);
+                max_x = Math.max(max_x, offset_x + orange.offsetWidth);
+                max_y = Math.max(max_y, offset_y + orange.offsetHeight);
+                min_x = Math.min(min_x, offset_x);
+                min_y = Math.min(min_y, offset_y);
+                if (offset_x > 315) {
+                    offset_x = 10;
+                    offset_y += 80 + Math.floor(Math.random() * 20);
+                }
+                container.appendChild(orange);
+            }
+            const w = (max_x - min_x + 85);
+            const h = (max_y - min_y + 85);
+            container.style.width = w + "px";
+            container.style.height = h + "px";
+            container.style.left = (400 - w) / 2 + "px";
+            container.style.top = (400 - h) / 2 + "px";
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            createScene();
+        });
+
+    </script>
+
+    <style>
+        #main {
+            position: absolute;
+            left: 10px;
+            right: 10px;
+            top: 10px;
+            bottom: 10px;
+            display: flex;
+            flex-direction: row;
+        }
+
+        body {
+            position: absolute;
+            background-color: rgb(16, 16, 28);
+            left: 0px;
+            right: 0px;
+            top: 0px;
+            bottom: 0px;
+            font-size: 24px;
+            color: white;
+        }
+
+        #bottom-part {
+            display: flex;
+            flex-direction: row;
+            flex: 1;
+        }
+
+        #right-side {
+            flex: 1;
+        }
+
+        #left-side {
+            flex: 1;
+        }
+
+        #middle-side {
+            flex: 1;
+        }
+
+        #reset-button {
+            width: 0.6in;
+            background-image: url('reset.png');
+            background-repeat: no-repeat;
+            background-size: contain;
+            background-color: transparent;
+            border: none;
+            padding: 0px;
+            border-radius: 50%;
+        }
+
+        #reset-button:hover {
+            cursor: hand;
+            box-shadow: 0px 0px 12px 1px white;
+        }
+
+        #run-button {
+            width: 0.6in;
+            background-image: url('run.png');
+            background-repeat: no-repeat;
+            background-size: contain;
+            background-color: transparent;
+            border: none;
+            padding: 0px;
+            border-radius: 50%;
+        }
+
+        #run-button:hover {
+            cursor: hand;
+            box-shadow: 0px 0px 12px 1px white;
+        }
+
+        #result-image {
+            width: 0.6in;
+            margin-right: 20px;
+        }
+
+        .box {
+            border-radius: 8px;
+            border: 1px black solid;
+            box-shadow: 0px 0px 12px 1px rgb(84, 81, 81);
+            padding: 5px;
+            color: white;
+            flex: 5;
+        }
+
+        #overlay-message {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 50;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+        }
+
+        .overlay-message-text {
+            position: fixed;
+            top: 40%;
+            left: 20%;
+            width: 60%;
+            height: 20%;
+            font-size: 24px;
+            color: white;
+            text-align: center;
+            display: none;
+            background-color: rgb(50, 50, 50);
+            border-radius: 18px;
+            box-shadow: 0px 0px 12px 1px white;
+            vertical-align: middle;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .button {
+            width: 1.2in;
+            height: 0.6in;
+            background-color: rgb(108, 22, 22);
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0px 0px 12px 1px black;
+            padding: 5px;
+            margin: 25px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .button:hover {
+            cursor: hand;
+            box-shadow: 0px 0px 20px 1px white;
+        }
+
+        .button:active {
+            box-shadow: 0px 0px 12px 1px bluel;
+        }
+
+        #confetti-container {
+            overflow: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .confetti {
+            width: 5px;
+            height: 12px;
+            top: -100px;
+            border-radius: 10%;
+            position: absolute;
+            animation: confetti-fall linear 3s;
+            /* Adjust duration as needed */
+            z-index: 100;
+        }
+
+        #good-result {
+            background-color: rgb(50, 150, 50);
+        }
+
+        #bad-result {
+            background-color: rgb(50, 50, 50);
+        }
+
+        .fruit {
+            background-image: url('orange.svg');
+            background-repeat: no-repeat;
+            background-size: contain;
+            background-color: transparent;
+            padding: 0px;
+            width: 85px;
+            height: 85px;
+            position: absolute;
+        }
+
+        #canvas {
+            width: 400px;
+            height: 400px;
+            position: absolute;
+        }
+
+        #fruit-container {
+            position: absolute;
+        }
+
+        /* CSS animation keyframes */
+        @keyframes confetti-fall {
+
+        }
+
+        @media screen and (orientation: landscape) and (min-width: 1000px) {
+
+        }
+
+        @media screen and (orientation: landscape) and (max-width: 1000px) {
+
+        }
+
+        /* Styles for screens in portrait orientation */
+        @media screen and (orientation: portrait) {
+
+        }
+    </style>
+</head>
+
+<body>
+    <div id="main">
+        <div class="box" id="canvas">
+            <div id="fruit-container"></div>
+        </div>
+        <div id="bottom-part">
+            <div id="left-side"></div>
+                
+            <div id="middle-side"> = </div>
+            <div id="right-side">
+                <input type="text" id="answer" />
+            </div>
+        </div>
+    </div>
+    
+    <div id="overlay-message">
+        <div id="confetti-container"></div>
+        <div class="overlay-message-text" id="good-result">
+            <div>Congratulations! You solved the problem!</div>
+            <div>
+                <button class="button" onclick="stayInPage()">Stay</button>
+                <button class="button" onclick="nextProblem()">Next problem!</button>
+            </div>
+        </div>
+        <div class="overlay-message-text" id="bad-result">
+            <div>Maybe you should try again ..</div>
+            <div>
+                <button class="button" onclick="stayInPage()">Try again</button>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
